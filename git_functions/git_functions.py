@@ -4,8 +4,8 @@ import os
 import shutil
 
 
-def clone_mirror_repo(old_repo_url, new_repo_path):
-    subprocess.run(["git", "clone", "--mirror", old_repo_url, new_repo_path], check=True)
+def clone_mirror_repo(demo_repo_url, new_repo_path):
+    subprocess.run(["git", "clone", "--mirror", demo_repo_url, new_repo_path], check=True)
 
 
 def change_directory(new_repo_path):
@@ -26,7 +26,7 @@ def remove_all_branches_except_master():
         # If other branches exist, delete them
         if other_branches:
             print(f"Deleting branches:\n{other_branches}")
-            subprocess.run("git branch | grep -v 'master' | xargs git branch -D", shell=True, check=True)
+            subprocess.run("git branch | grep -v 'master' | git branch -D xargs", shell=True, check=True)
             print("Deleted all branches except master.")
         else:
             print("No branches other than master found. Skipping deletion.")
@@ -49,10 +49,10 @@ def push_all_tags():
     repo.git.push('--tags', 'origin')
 
 
-def onboard_new_repo(old_repo_url, new_repo_url, new_repo_path):
+def onboard_new_repo(demo_repo_url, new_repo_url, new_repo_path):
     try:
         # Step 1: Clone the repo with --mirror
-        clone_mirror_repo(old_repo_url, new_repo_path)
+        clone_mirror_repo(demo_repo_url, new_repo_path)
 
         # Step 2: Change directory to the newly cloned repo
         change_directory(new_repo_path)
@@ -81,6 +81,7 @@ def onboard_new_repo(old_repo_url, new_repo_url, new_repo_path):
 
 
 def delete_existing_folder(repo_path):
+    print(os.getcwd())
     if os.path.exists(repo_path):
         shutil.rmtree(repo_path)
         print(f"Deleted folder: {repo_path}")
@@ -89,8 +90,9 @@ def delete_existing_folder(repo_path):
 
 
 def clone_new_repo(new_repo_url, repo_path):
+    os.chdir('..')
     repo = git.Repo.clone_from(new_repo_url, repo_path)
-    print(f"Cloned repo from {new_repo_url} to {repo_path}")
+    print(f"Cloned repo from {new_repo_url} to {repo_path}_New")
     return repo  # Return the repo object for further actions
 
 
@@ -98,12 +100,12 @@ def modify_dev_syncer(client_name, file_path='dev_syncer.sh'):
     with open(file_path, 'r') as file:
         content = file.read()
 
-    updated_content = content.replace("Nullpoint_Demo", client_name)
+    updated_content = content.replace("Odysseas_Demo", client_name)
 
     with open(file_path, 'w') as file:
         file.write(updated_content)
 
-    print(f"Modified {file_path} to replace 'Nullpoint_Demo' with '{client_name}'")
+    print(f"Modified {file_path} to replace 'Odysseas_Demo' with '{client_name}'")
 
 
 def git_add_all(repo):
@@ -150,12 +152,12 @@ def finalize_repo_setup(new_repo_url, repo_path, client_name):
     except git.exc.GitCommandError as e:
         print(f"Git error: {e}")
 
-old_repo_url = "https://github.com/podyssea/WLgr.git"
+demo_repo_url = "https://github.com/podyssea/WLgr.git"
 new_repo_url = "https://github.com/podyssea/Testing.git"
 new_repo_path = "./Testing"
-repo_path = new_repo_path
+repo_path = "./Testing"
 client_name = "Testing"
 
 
-onboard_new_repo(old_repo_url, new_repo_url, repo_path)
+# onboard_new_repo(demo_repo_url, new_repo_url, repo_path)
 # finalize_repo_setup(new_repo_url, repo_path, client_name)
