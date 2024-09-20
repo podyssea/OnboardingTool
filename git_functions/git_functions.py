@@ -157,7 +157,3 @@ new_repo_url = "https://github.com/podyssea/Testing.git"
 new_repo_path = "./Testing"
 repo_path = "./Testing"
 client_name = "Testing"
-
-
-# onboard_new_repo(demo_repo_url, new_repo_url, repo_path)
-# finalize_repo_setup(new_repo_url, repo_path, client_name)
