@@ -18,7 +18,20 @@ def remove_origin_remote():
 
 
 def remove_all_branches_except_master():
-    subprocess.run("git branch | grep -v 'master' | xargs git branch -D", shell=True, check=True)
+    try:
+        # Get all branches except master
+        result = subprocess.run("git branch | grep -v 'master'", shell=True, capture_output=True, text=True)
+        other_branches = result.stdout.strip()
+
+        # If other branches exist, delete them
+        if other_branches:
+            print(f"Deleting branches:\n{other_branches}")
+            subprocess.run("git branch | grep -v 'master' | xargs git branch -D", shell=True, check=True)
+            print("Deleted all branches except master.")
+        else:
+            print("No branches other than master found. Skipping deletion.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing branch deletion command: {e}")
 
 
 def add_new_remote(new_repo_url):
@@ -136,3 +149,13 @@ def finalize_repo_setup(new_repo_url, repo_path, client_name):
         print(f"Error executing command: {e}")
     except git.exc.GitCommandError as e:
         print(f"Git error: {e}")
+
+old_repo_url = "https://github.com/podyssea/WLgr.git"
+new_repo_url = "https://github.com/podyssea/Testing.git"
+new_repo_path = "./Testing"
+repo_path = new_repo_path
+client_name = "Testing"
+
+
+onboard_new_repo(old_repo_url, new_repo_url, repo_path)
+# finalize_repo_setup(new_repo_url, repo_path, client_name)
